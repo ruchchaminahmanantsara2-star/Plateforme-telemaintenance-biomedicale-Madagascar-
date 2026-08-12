@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Télémaintenance-biomédicale-Madagascar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+
+<!-- Écran de connexion -->
+<div id="ecran-login" class="ecran-login">
+  <div class="login-illustration" aria-hidden="true">
+    <svg viewBox="0 0 320 220" width="100%" height="100%">
+      <circle cx="160" cy="110" r="95" fill="var(--sage-soft)" opacity="0.6"/>
+      <circle cx="70" cy="60" r="7" fill="var(--sage)"/>
+      <circle cx="250" cy="55" r="6" fill="var(--coral)"/>
+      <circle cx="255" cy="160" r="8" fill="var(--sage)"/>
+      <circle cx="55" cy="150" r="5" fill="var(--coral)"/>
+      <line x1="70" y1="60" x2="160" y2="110" stroke="var(--teal)" stroke-width="1.5" opacity="0.5"/>
+      <line x1="250" y1="55" x2="160" y2="110" stroke="var(--teal)" stroke-width="1.5" opacity="0.5"/>
+      <line x1="255" y1="160" x2="160" y2="110" stroke="var(--teal)" stroke-width="1.5" opacity="0.5"/>
+      <line x1="55" y1="150" x2="160" y2="110" stroke="var(--teal)" stroke-width="1.5" opacity="0.5"/>
+      <rect x="120" y="80" width="80" height="60" rx="8" fill="var(--panel)" stroke="var(--teal)" stroke-width="2"/>
+      <polyline points="130,112 145,112 150,98 158,126 165,112 190,112" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="160" cy="110" r="95" fill="none" stroke="var(--teal)" stroke-width="1" opacity="0.25"/>
+    </svg>
+  </div>
+  <div class="login-card">
+    <div class="login-brand">
+      <svg class="logo-badge" viewBox="0 0 60 60" width="42" height="42">
+        <circle cx="30" cy="30" r="28" fill="var(--teal-dark)"/>
+        <polyline points="10,30 20,30 24,18 30,42 36,22 40,30 50,30" fill="none" stroke="var(--coral)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Télémaintenance-biomédicale-Madagascar</span>
+    </div>
+    <p class="login-sub">Plateforme collaborative de télémaintenance biomédicale</p>
+    <label>Email</label>
+    <input type="email" id="login-email" placeholder="Entrez votre email" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--line); font-family:var(--font-body); font-size:14px; margin-bottom:14px;">
+    <label>Mot de passe</label>
+    <input type="password" id="login-mdp" placeholder="Entrez votre mot de passe" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--line); font-family:var(--font-body); font-size:14px; margin-bottom:18px;">
+    <button id="btn-login" class="btn-primary">Se connecter</button>
+    <p id="login-erreur" style="color:#B14A36; font-size:13px; margin-top:10px; display:none;"></p>
+    <p class="login-hint">Comptes de démonstration :<br>rakoto@sante.mg · andry@maintenance.mg · rasoa@expert.mg (mdp : demo123)<br>hery@hopital.mg (mdp : demo123) · admin@plateforme.mg (mdp : 321demo)</p>
+  </div>
+</div>
+
+<!-- Application -->
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="logo-badge" viewBox="0 0 60 60" width="30" height="30">
+        <circle cx="30" cy="30" r="28" fill="var(--sage)"/>
+        <polyline points="10,30 20,30 24,18 30,42 36,22 40,30 50,30" fill="none" stroke="var(--teal-dark)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Télémaintenance-biomédicale-Madagascar</span>
+    </div>
+    <nav>
+      <button class="nav-item active" data-vue="dashboard">Tableau de bord</button>
+      <button class="nav-item" data-vue="equipements">Équipements</button>
+      <button class="nav-item" data-vue="incidents">Incidents</button>
+      <button class="nav-item" data-vue="interventions">Interventions</button>
+      <button class="nav-item" data-vue="connaissances">Base de connaissances</button>
+      <button class="nav-item hidden" data-vue="utilisateurs" id="nav-utilisateurs">Utilisateurs</button>
+    </nav>
+    <div class="user-box">
+      <div class="user-name" id="user-nom"></div>
+      <div class="user-role" id="user-role"></div>
+      <button id="btn-logout" class="btn-link">Changer de compte</button>
+    </div>
+  </aside>
+
+  <main class="contenu">
+    <section id="vue-dashboard" class="vue"></section>
+    <section id="vue-equipements" class="vue hidden"></section>
+    <section id="vue-incidents" class="vue hidden"></section>
+    <section id="vue-interventions" class="vue hidden"></section>
+    <section id="vue-connaissances" class="vue hidden"></section>
+    <section id="vue-utilisateurs" class="vue hidden"></section>
+  </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
