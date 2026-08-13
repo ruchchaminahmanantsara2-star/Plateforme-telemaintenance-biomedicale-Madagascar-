@@ -96,3 +96,12 @@ async function renderUtilisateurs() {
     el.innerHTML = `<p style="color:#B14A36;">Impossible de charger la liste des utilisateurs.</p>`;
   }
 }
+
+const Database = require('better-sqlite3');
+const path = require('path');
+
+// Initialisation de la base de données SQLite
+const db = new Database(path.join(__dirname, 'plateforme.db'));
+
+// Explication : On exporte l'instance pour que les routes puissent l'importer
+module.exports = db;

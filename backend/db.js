@@ -1,36 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../db'); // Export de votre instance DatabaseSync
-const { verifierAuthentification } = require('../middlewares/auth');
+const Database = require('better-sqlite3');
+const path = require('path');
 
-router.get('/equipements', verifierAuthentification, (req, res) => {
-  try {
-    let equipements;
+// Initialisation de la base de données SQLite
+const db = new Database(path.join(__dirname, 'plateforme.db'));
 
-    // Si administrateur ou expert distant sans établissement fixe -> TOUS les équipements
-    if (req.utilisateur.role === 'administrateur' || !req.utilisateur.etablissement_id) {
-      equipements = db.prepare(`
-        SELECT e.*, et.nom AS etablissement_nom
-        FROM equipements e
-        LEFT JOIN etablissements et ON et.id = e.etablissement_id
-        ORDER BY e.id DESC
-      `).all();
-    } else {
-      // Filtrage par établissement de l'utilisateur connecté
-      equipements = db.prepare(`
-        SELECT e.*, et.nom AS etablissement_nom
-        FROM equipements e
-        LEFT JOIN etablissements et ON et.id = e.etablissement_id
-        WHERE e.etablissement_id = ?
-        ORDER BY e.id DESC
-      `).all(req.utilisateur.etablissement_id);
-    }
+// Activation du mode WAL pour de meilleures performances
+db.pragma('journal_mode = WAL');
 
-    res.json(equipements);
-  } catch (erreur) {
-    console.error('Erreur SQL:', erreur);
-    res.status(500).json({ erreur: 'Erreur lors de la récupération des équipements' });
-  }
-});
-
-module.exports = router;
+// Exporter l'instance de la base de données
+module.exports = db;
