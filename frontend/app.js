@@ -1,4 +1,4 @@
-const API = 'https://plateforme-telemaintenance-biomedicale.onrender.com/api';
+const BACKEND_BASE = 'https://plateforme-telemaintenance-biomedicale-ye6r.onrender.com';
 const BACKEND_BASE = API.replace('/api', '');
 
 async function renderUtilisateurs() {

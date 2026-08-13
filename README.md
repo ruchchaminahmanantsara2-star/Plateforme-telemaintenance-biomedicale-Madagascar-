@@ -37,7 +37,7 @@ Tu dois voir : `API de la plateforme de télémaintenance démarrée sur http://
 ### 3. Lancer le frontend
 Ouvre `frontend/index.html` directement dans ton navigateur (double-clic), ou utilise l'extension VS Code **Live Server**.
 
-⚠️ **Important** : `frontend/app.js` pointe par défaut vers le backend déployé en ligne (`https://medilink-plateforme-telemaintenance.onrender.com`), pas vers `localhost`. Si tu veux tester avec ton backend local, remplace en haut de `app.js` :
+⚠️ **Important** : `frontend/app.js` pointe par défaut vers le backend déployé en ligne (`https://Plateforme-telemaintenance-biomedicale-Madagascar-.onrender.com`), pas vers `localhost`. Si tu veux tester avec ton backend local, remplace en haut de `app.js` :
 ```javascript
 const API = 'http://localhost:3001/api';
 ```
@@ -87,7 +87,7 @@ node test-performance.js https://medilink-plateforme-telemaintenance.onrender.co
 
 ## Déploiement en ligne
 
-- **Backend** : Render — `https://medilink-plateforme-telemaintenance.onrender.com`
+- **Backend** : Render — `https://Plateforme-telemaintenance-biomedicale-Madagascar-.onrender.com`
 - **Frontend** : Netlify — `https://medilink-chutanambao.netlify.app`
 
 Pour republier après une modification :
