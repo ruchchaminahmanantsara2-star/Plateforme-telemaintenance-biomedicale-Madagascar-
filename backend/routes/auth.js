@@ -7,6 +7,11 @@ const verifierAuthentification = require('../middleware/auth');
 const verifierAdmin = require('../middleware/admin');
 
 const router = express.Router();
+const adminUser = {
+  email: 'admin@plateforme.mg',
+  role: 'admin', // Ou 'superadmin'
+  etablissementId: null // null pour qu'il ait accès à TOUS les établissements !
+};
 
 router.post('/login', (req, res) => {
   const { email, mot_de_passe } = req.body;
