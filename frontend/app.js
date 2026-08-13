@@ -1,4 +1,5 @@
- const utilisateurs = await api('/auth/utilisateurs');
+const API = 'https://Plateforme-telemaintenance-biomedicale-Madagascar.onrender.com/api';
+const BACKEND_BASE = API.replace('/api', ''); const utilisateurs = await api('/auth/utilisateurs');
 
   el.innerHTML = `
     <div class="entete-vue">
