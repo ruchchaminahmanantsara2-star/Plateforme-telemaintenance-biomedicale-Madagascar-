@@ -14,27 +14,16 @@ router.get('/etablissements', verifierAuthentification, (req, res) => {
   }
 });
 
-// GET /api/equipements
+// GET /api/equipements (Tous les utilisateurs voient TOUS les équipements)
 router.get('/', verifierAuthentification, (req, res) => {
   try {
-    let equipements;
-
-    if (req.utilisateur.role === 'administrateur') {
-      equipements = db.prepare(`
-        SELECT e.*, et.nom AS etablissement_nom
-        FROM equipements e
-        LEFT JOIN etablissements et ON et.id = e.etablissement_id
-        ORDER BY e.id DESC
-      `).all();
-    } else {
-      equipements = db.prepare(`
-        SELECT e.*, et.nom AS etablissement_nom
-        FROM equipements e
-        LEFT JOIN etablissements et ON et.id = e.etablissement_id
-        WHERE e.etablissement_id = ?
-        ORDER BY e.id DESC
-      `).all(req.utilisateur.etablissement_id);
-    }
+    // Suppression de la condition IF : Tout le monde récupère la totalité des équipements
+    const equipements = db.prepare(`
+      SELECT e.*, et.nom AS etablissement_nom
+      FROM equipements e
+      LEFT JOIN etablissements et ON et.id = e.etablissement_id
+      ORDER BY e.id DESC
+    `).all();
 
     res.json(equipements);
   } catch (erreur) {
@@ -44,12 +33,7 @@ router.get('/', verifierAuthentification, (req, res) => {
 
 // POST /api/equipements (Création d'un équipement)
 router.post('/', verifierAuthentification, (req, res) => {
-  let { etablissement_id, nom, type, numero_serie, date_acquisition } = req.body;
-
-  // 🔒 SÉCURITÉ : Un non-admin ne peut créer des équipements que dans SON établissement
-  if (req.utilisateur.role !== 'administrateur') {
-    etablissement_id = req.utilisateur.etablissement_id;
-  }
+  const { etablissement_id, nom, type, numero_serie, date_acquisition } = req.body;
 
   if (!etablissement_id || !nom || !type || !numero_serie) {
     return res.status(400).json({ erreur: 'Champs requis manquants' });
@@ -82,21 +66,13 @@ router.patch('/:id/statut', verifierAuthentification, (req, res) => {
   }
 
   try {
-    let info;
-
-    // 🔒 SÉCURITÉ : Un non-admin ne peut modifier QUE les équipements de son établissement
-    if (req.utilisateur.role === 'administrateur') {
-      info = db
-        .prepare('UPDATE equipements SET statut = ? WHERE id = ?')
-        .run(statut, id);
-    } else {
-      info = db
-        .prepare('UPDATE equipements SET statut = ? WHERE id = ? AND etablissement_id = ?')
-        .run(statut, id, req.utilisateur.etablissement_id);
-    }
+    // Tout utilisateur authentifié peut mettre à jour n'importe quel équipement
+    const info = db
+      .prepare('UPDATE equipements SET statut = ? WHERE id = ?')
+      .run(statut, id);
 
     if (info.changes === 0) {
-      return res.status(404).json({ erreur: 'Équipement non trouvé ou non autorisé' });
+      return res.status(404).json({ erreur: 'Équipement non trouvé' });
     }
 
     res.json({ ok: true, message: 'Statut mis à jour avec succès' });
