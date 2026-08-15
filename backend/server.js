@@ -7,9 +7,11 @@ const { Server } = require('socket.io');
 const db = require('./db');
 const { setIo } = require('./io');
 
+// Création du dossier d'uploads s'il n'existe pas
 const dossierUploads = path.join(__dirname, 'uploads');
 if (!fs.existsSync(dossierUploads)) fs.mkdirSync(dossierUploads);
 
+// Importation des routes
 const authRoutes = require('./routes/auth');
 const equipementsRoutes = require('./routes/equipements');
 const incidentsRoutes = require('./routes/incidents');
@@ -18,26 +20,28 @@ const connaissancesRoutes = require('./routes/connaissances');
 const verifierAuthentification = require('./middleware/auth');
 
 const app = express();
+
+// Middlewares globaux (CORS & JSON)
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(dossierUploads));
+
+// Route de bienvenue
 app.get('/', (req, res) => {
   res.json({
     message: 'API MediLink - Plateforme de télémaintenance biomédicale',
     statut: 'Serveur démarré avec succès'
   });
 });
-// /api/auth reste public (connexion) — la protection des sous-routes sensibles
-// (création d'utilisateur, réservée à l'administrateur) est gérée dans routes/auth.js
-app.use('/api/auth', authRoutes);
 
-// Toutes les routes suivantes exigent un token JWT valide
+// Routes de l'API
+app.use('/api/auth', authRoutes);
 app.use('/api/equipements', verifierAuthentification, equipementsRoutes);
 app.use('/api/incidents', verifierAuthentification, incidentsRoutes);
 app.use('/api/interventions', verifierAuthentification, interventionsRoutes);
 app.use('/api/connaissances', verifierAuthentification, connaissancesRoutes);
 
-// Indicateurs simples pour le tableau de bord
+// Indicateurs pour le tableau de bord
 app.get('/api/dashboard', verifierAuthentification, (req, res) => {
   const totalEquipements = db.prepare('SELECT COUNT(*) AS n FROM equipements').get().n;
   const equipementsEnPanne = db
@@ -53,6 +57,7 @@ app.get('/api/dashboard', verifierAuthentification, (req, res) => {
   res.json({ totalEquipements, equipementsEnPanne, incidentsOuverts, interventionsEnCours });
 });
 
+// Port d'écoute dynamique (Render assigne son propre PORT)
 const PORT = process.env.PORT || 3001;
 
 const server = http.createServer(app);
@@ -64,5 +69,5 @@ io.on('connection', (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`API de la plateforme de télémaintenance démarrée sur http://localhost:${PORT}`);
+  console.log(`API de la plateforme de télémaintenance démarrée sur le port ${PORT}`);
 });
