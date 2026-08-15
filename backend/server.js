@@ -21,7 +21,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(dossierUploads));
-
+app.get('/', (req, res) => {
+  res.json({
+    message: 'API MediLink - Plateforme de télémaintenance biomédicale',
+    statut: 'Serveur démarré avec succès'
+  });
+});
 // /api/auth reste public (connexion) — la protection des sous-routes sensibles
 // (création d'utilisateur, réservée à l'administrateur) est gérée dans routes/auth.js
 app.use('/api/auth', authRoutes);
